@@ -5,12 +5,12 @@ export const montserrat = Montserrat({
     weight: "variable"
 })
 
-export const title = Jockey_One({
+export const title_font = Jockey_One({
     subsets: ["latin"],
     weight: "400"
 })
 
-export const nothing = Nothing_You_Could_Do({
+export const logo_font = Nothing_You_Could_Do({
     subsets: ["latin"],
     weight: "400"
 })

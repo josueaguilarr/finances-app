@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { montserrat } from "@/components/ui/fonts/fonts";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -20,7 +21,8 @@ export default function RootLayout({
       <body
         className={`${montserrat.className} antialiased dark`}
       >
-        {children}
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   );
