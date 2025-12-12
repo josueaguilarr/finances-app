@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { actions } from "@/actions";
 import {
   Card,
   CardContent,
@@ -9,49 +9,61 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { useAuthStore } from "@/store/useAuth";
 import { Label } from "@radix-ui/react-label";
+import { Input } from "@/components/ui/input";
+import { useActionState, useEffect } from "react";
+import { type FormState } from "@/validations/auth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { SubmitButton } from "./submit-button";
 
-export default function RegisterForm() {
-  const { setFormRegister, formRegister, signup, loading } = useAuthStore();
-  const { email, password, confirmPassword } = formRegister;
-  const router = useRouter();
+const INITIAL_STATE: FormState = {
+  success: false,
+  message: undefined,
+  zodErrors: null,
+  data: {
+    email: "",
+    password: "",
+    confirmPassword: "",
+  },
+};
 
-  const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await signup();
+export function SignupForm() {
+  const [formState, formAction] = useActionState(
+    actions.auth.registerUserAction,
+    INITIAL_STATE
+  );
 
-    if (res) {
-      router.push("/signin");
+  useEffect(() => {
+    if (formState.zodErrors) {
+      Object.entries(formState.zodErrors).forEach(([, messages]) => {
+        messages.forEach((msg) => toast.error(`${msg}`));
+      });
     }
-  };
+
+    if (formState.supabaseErrors) {
+      toast.error(formState.supabaseErrors.reasons);
+    }
+  }, [formState]);
 
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Registro</CardTitle>
-        <CardDescription>
-          Descripcion
-        </CardDescription>
+        <CardDescription>Descripcion</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmitLogin} id="signin-form">
+        <form action={formAction}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Correo electrónico</Label>
               <Input
                 id="email"
                 type="email"
-                value={email}
+                name="email"
+                defaultValue={formState.data?.email ?? ""}
                 placeholder="jhondoe@sample.com"
                 required
-                onChange={(e) => {
-                  setFormRegister({ email: e.target.value });
-                }}
               />
             </div>
             <div className="grid gap-2">
@@ -61,11 +73,9 @@ export default function RegisterForm() {
               <Input
                 id="password"
                 type="text"
-                value={password}
+                name="password"
+                defaultValue={formState.data?.password ?? ""}
                 required
-                onChange={(e) => {
-                  setFormRegister({ password: e.target.value });
-                }}
               />
             </div>
             <div className="grid gap-2">
@@ -75,26 +85,17 @@ export default function RegisterForm() {
               <Input
                 id="password"
                 type="text"
-                value={confirmPassword}
+                name="confirmPassword"
+                defaultValue={formState.data?.confirmPassword ?? ""}
                 required
-                onChange={(e) => {
-                  setFormRegister({ confirmPassword: e.target.value });
-                }}
               />
             </div>
           </div>
+
+          <SubmitButton label="Registrarse" loadingLabel="Registrando..." />
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button form="signin-form" type="submit" className="w-full" disabled={loading}>
-          {loading ? (
-            <>
-              <Spinner /> Registrando
-            </>
-          ) : (
-            "Registrarse"
-          )}
-        </Button>
         <p className="text-xs mt-3">
           ¿Ya estas registrado?{" "}
           <Link

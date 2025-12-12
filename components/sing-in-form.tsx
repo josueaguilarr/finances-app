@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { actions } from "@/actions";
 import {
   Card,
   CardContent,
@@ -10,25 +10,40 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { useAuthStore } from "@/store/useAuth";
+import { FormState } from "@/validations/auth";
 import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+import { SubmitButton } from "./submit-button";
 
-export default function LoginForm() {
-  const { setFormLogin, formLogin, signin, loading } = useAuthStore();
-  const { email, password } = formLogin;
-  const router = useRouter();
+const INITIAL_STATE: FormState = {
+  success: false,
+  message: undefined,
+  zodErrors: null,
+  data: {
+    email: "",
+    password: "",
+  },
+};
 
-  const handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const res = await signin();
+export function SigninForm() {
+  const [formState, formAction] = useActionState(
+    actions.auth.loginUserAction,
+    INITIAL_STATE
+  );
 
-    if (res) {
-      router.push("/tablero");
+  useEffect(() => {
+    if (formState.zodErrors) {
+      Object.entries(formState.zodErrors).forEach(([, messages]) => {
+        messages.forEach((msg) => toast.error(`${msg}`));
+      });
     }
-  };
+
+    if (formState.supabaseErrors) {
+      toast.error(formState.supabaseErrors.reasons);
+    }
+  }, [formState]);
 
   return (
     <Card className="w-full max-w-sm">
@@ -39,19 +54,17 @@ export default function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmitLogin} id="signin-form">
+        <form action={formAction}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Correo electrónico</Label>
               <Input
                 id="email"
                 type="email"
-                value={email}
+                name="email"
+                defaultValue={formState.data?.email ?? ""}
                 placeholder="jhondoe@sample.com"
                 required
-                onChange={(e) => {
-                  setFormLogin({ email: e.target.value });
-                }}
               />
             </div>
             <div className="grid gap-2">
@@ -67,26 +80,27 @@ export default function LoginForm() {
               <Input
                 id="password"
                 type="password"
-                value={password}
+                name="password"
+                defaultValue={formState.data?.password ?? ""}
                 required
-                onChange={(e) => {
-                  setFormLogin({ password: e.target.value });
-                }}
               />
             </div>
           </div>
+
+          <SubmitButton label="Iniciar sesión" loadingLabel="Iniciando sesión..." />
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button
-          form="signin-form"
-          type="submit"
-          className="w-full"
-          disabled={loading}
-        >
-          {loading ? (<><Spinner /> Iniciando sesión</>) : "Iniciar sesión"}
-        </Button>
-        <p className="text-xs mt-3">¿No tienes cuenta? <Link href="/signup" className="font-semibold underline-offset-4 hover:underline">Registrate</Link>.</p>
+        <p className="text-xs mt-3">
+          ¿No tienes cuenta?{" "}
+          <Link
+            href="/signup"
+            className="font-semibold underline-offset-4 hover:underline"
+          >
+            Registrate
+          </Link>
+          .
+        </p>
       </CardFooter>
     </Card>
   );
