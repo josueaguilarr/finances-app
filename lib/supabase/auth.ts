@@ -32,3 +32,17 @@ export async function loginUserService(userData: SigninFormValues) {
     throw error;
   }
 }
+
+export async function getUserSession() {
+  const supabase = await createClient();
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}

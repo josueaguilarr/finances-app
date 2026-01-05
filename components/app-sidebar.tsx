@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Building2Icon, User } from "lucide-react";
+import {
+  Building2Icon,
+  User,
+  LayoutDashboard,
+  WalletCards,
+  BanknoteArrowUp,
+  BookOpenCheck,
+  HandCoins,
+  Flag,
+} from "lucide-react";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -17,6 +26,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -44,7 +55,32 @@ const data = {
         {
           title: "Tablero",
           url: "/tablero",
-          isActive: true,
+          icon: LayoutDashboard,
+        },
+        {
+          title: "Cuentas",
+          url: "/accounts",
+          icon: WalletCards,
+        },
+        {
+          title: "Transacciones",
+          url: "/transactions",
+          icon: BanknoteArrowUp,
+        },
+        {
+          title: "Categorías",
+          url: "/categories",
+          icon: BookOpenCheck,
+        },
+        {
+          title: "Presupuestos",
+          url: "/budgets",
+          icon: HandCoins,
+        },
+        {
+          title: "Metas",
+          url: "/goals",
+          icon: Flag,
         },
       ],
     },
@@ -52,25 +88,37 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
+  const isRouteActive = (pathname: string, url: string) => {
+    return pathname === url;
+  };
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {item.items.map((item) => {
+                  const isActive = isRouteActive(pathname, item.url);
+
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild isActive={isActive}>
+                        <Link href={item.url}>
+                          {item.icon && <item.icon className="size-4" />}
+                          {item.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
