@@ -15,7 +15,7 @@ export async function registerAccountAction(
   const fields = {
     name: formData.get("name") as string,
     type: formData.get("type") as string,
-    balance: Number(formData.get("balance")),
+    balance: formData.get("balance") as string,
     currency: formData.get("currency") as string,
   };
 

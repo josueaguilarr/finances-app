@@ -7,16 +7,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Field, FieldLabel } from "./ui/field";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Field, FieldLabel } from "../../../components/ui/field";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import { useActionState, useEffect } from "react";
 import { actions } from "@/actions";
 import { toast } from "sonner";
 import { AccountFormState } from "@/validations/account";
-import { DialogFooter } from "./ui/dialog";
+import { DialogFooter } from "../../../components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "./ui/button";
+import { Button } from "../../../components/ui/button";
 
 const INITIAL_STATE: AccountFormState = {
   success: false,
@@ -25,7 +25,7 @@ const INITIAL_STATE: AccountFormState = {
   data: {
     name: "",
     type: "cash",
-    balance: 0,
+    balance: "0.00",
     currency: "mxn",
   },
 };
@@ -80,7 +80,7 @@ export const FormNewAccount = () => {
             <FieldLabel htmlFor="balance">Balance</FieldLabel>
             <Input
               id="balance"
-              type="number"
+              type="text"
               name="balance"
               defaultValue={state.data?.balance}
               placeholder="0.00"

@@ -8,8 +8,8 @@ export const AccountFormSchema = z.object({
   type: z.enum(["cash", "bank", "wallet"], {
     error: "Tipo de cuenta inválido.",
   }),
-  balance: z.coerce
-    .number({ error: "El balance debe ser un número." })
+  balance: z
+    .string({ error: "El balance debe ser un número." })
     .min(1, "El balance debe de ser mayor a 0."),
   currency: z.enum(["mxn", "usd"], {
     error: "Moneda inválida.",
@@ -24,7 +24,7 @@ export type AccountFormState = {
   data?: {
     name?: string;
     type?: string;
-    balance?: number;
+    balance?: string;
     currency?: string;
   };
   zodErrors?: {

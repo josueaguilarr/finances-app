@@ -2,13 +2,29 @@ import { AccountFormValues } from "@/validations/account";
 import { createClient } from "./server";
 import { getUserSession } from "./auth";
 
-export async function getAllAccountsService() {
+export async function getAccountsService() {
   const supabase = await createClient();
 
   try {
     const { data: accounts, error } = await supabase
       .from("accounts")
       .select("*");
+
+    if (error) return { error: true, message: error.message };
+
+    return { accounts };
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getIdAndNameAccountsService() {
+  const supabase = await createClient();
+
+  try {
+    const { data: accounts, error } = await supabase
+      .from("accounts")
+      .select("id, name");
 
     if (error) return { error: true, message: error.message };
 
