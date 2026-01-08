@@ -18,6 +18,22 @@ export async function getCategoriesService() {
   }
 }
 
+export async function getIdAndNameCategoriesService() {
+  const supabase = await createClient();
+
+  try {
+    const { data: categories, error } = await supabase
+      .from("categories")
+      .select("id, name");
+
+    if (error) return { error: true, message: error.message };
+
+    return { categories };
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function registerCategoryService(
   categoryData: CategoryFormValues
 ) {
