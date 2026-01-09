@@ -22,7 +22,7 @@ export default function RootLayout({
         className={`${montserrat.className} antialiased dark`}
       >
         <main>{children}</main>
-        <Toaster />
+        <Toaster expand={true} />
       </body>
     </html>
   );

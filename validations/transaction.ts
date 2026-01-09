@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const TransactionFormSchema = z.object({
-  account: z.uuidv4("Invalid Account ID"),
-  category: z.uuidv4("Invalid Category ID"),
-  date: z.string("Invalid date format"),
-  description: z.string().min(1, "Description must be at least 1 characters"),
+  account: z.uuidv4("Invalid Account."),
+  category: z.uuidv4("Invalid Category."),
+  date: z.string("Invalid date format."),
+  description: z.string().min(1, "Description must be at least 1 characters."),
   amount: z.string(),
   type: z.enum(["income", "expense"], {
-    error: "Type must be either income or expense",
+    error: "Type must be either income or expense.",
   }),
   notes: z.string().optional(),
 });

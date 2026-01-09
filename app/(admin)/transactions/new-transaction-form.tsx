@@ -97,10 +97,12 @@ export const FormNewTransaction = ({
           <FieldLabel htmlFor="account">Account</FieldLabel>
           <Select name="account" defaultValue={state.data?.account}>
             <SelectTrigger id="account">
-              <SelectValue placeholder={accounts[0].name} />
+              <SelectValue
+                placeholder={accounts[0]?.name ?? "No accounts..."}
+              />
             </SelectTrigger>
             <SelectContent>
-              {accounts.map(({ id, name }) => (
+              {accounts?.map(({ id, name }) => (
                 <SelectItem key={id} value={id}>
                   {name}
                 </SelectItem>
@@ -113,10 +115,12 @@ export const FormNewTransaction = ({
           <FieldLabel htmlFor="category">Category</FieldLabel>
           <Select name="category" defaultValue={state.data?.category}>
             <SelectTrigger id="category">
-              <SelectValue placeholder={categories[0].name} />
+              <SelectValue
+                placeholder={categories[0]?.name ?? "No categories..."}
+              />
             </SelectTrigger>
             <SelectContent>
-              {categories.map(({ id, name }) => (
+              {categories?.map(({ id, name }) => (
                 <SelectItem key={id} value={id}>
                   {name}
                 </SelectItem>
