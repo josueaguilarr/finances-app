@@ -11,13 +11,11 @@ export function NewAccountDialog() {
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
       icon={Plus}
       buttonLabel="New account"
-      btnLabelCancel="Cancel"
-      btnLabelSuccess="Save"
       title="New account"
       description="Create a new account for manage your money."
+      onOpenChange={setOpen}
     >
       <FormNewAccount onSuccess={() => setOpen(false)} />
     </Dialog>

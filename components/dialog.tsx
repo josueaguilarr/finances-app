@@ -12,13 +12,11 @@ import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<{
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
   icon?: LucideIcon;
   buttonLabel: string;
-  btnLabelCancel: string;
-  btnLabelSuccess: string;
   title: string;
   description: string;
+  onOpenChange?: (open: boolean) => void;
 }>;
 
 export function Dialog({

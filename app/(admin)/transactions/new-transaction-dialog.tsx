@@ -18,13 +18,11 @@ export function NewTransactionDialog({ accounts, categories }: Props) {
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
       icon={Plus}
       buttonLabel="New transaction"
-      btnLabelCancel="Cancel"
-      btnLabelSuccess="Save"
       title="New transaction"
       description="Create a new transaction for manage your money."
+      onOpenChange={setOpen}
     >
       <FormNewTransaction
         accounts={accounts}
