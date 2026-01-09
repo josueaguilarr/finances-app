@@ -5,7 +5,7 @@ import {
   AccountFormSchema,
   type AccountFormState,
 } from "@/validations/account";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export async function registerAccountAction(
@@ -46,5 +46,10 @@ export async function registerAccountAction(
     };
   }
 
-  redirect("/accounts");
+  revalidatePath("/transactions");
+
+  return {
+    success: true,
+    message: `Account registered successfully.`,
+  };
 }

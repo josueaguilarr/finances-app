@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Select,
@@ -10,13 +10,14 @@ import {
 import { Field, FieldLabel } from "../../../components/ui/field";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { actions } from "@/actions";
 import { toast } from "sonner";
 import { AccountFormState } from "@/validations/account";
 import { DialogFooter } from "../../../components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Button } from "../../../components/ui/button";
+import { Loader } from "lucide-react";
 
 const INITIAL_STATE: AccountFormState = {
   success: false,
@@ -30,7 +31,12 @@ const INITIAL_STATE: AccountFormState = {
   },
 };
 
-export const FormNewAccount = () => {
+type FormNewAccountProps = {
+  onSuccess: () => void;
+};
+
+export const FormNewAccount = ({ onSuccess }: FormNewAccountProps) => {
+  const hasShownToast = useRef(false);
   const [state, formAction, pending] = useActionState(
     actions.accounts.registerAccountAction,
     INITIAL_STATE
@@ -46,7 +52,13 @@ export const FormNewAccount = () => {
     if (state.supabaseErrors) {
       toast.error(state.supabaseErrors.reasons);
     }
-  }, [state]);
+
+    if (state.success && !hasShownToast.current) {
+      toast.success(state.message);
+      hasShownToast.current = true;
+      onSuccess();
+    }
+  }, [state, onSuccess]);
 
   return (
     <>
@@ -103,9 +115,20 @@ export const FormNewAccount = () => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancelar</Button>
+            <Button variant="outline" disabled={pending}>
+              Cancel
+            </Button>
           </DialogClose>
-          <Button type="submit" disabled={pending}>Guardar</Button>
+          <Button type="submit" disabled={pending}>
+            {pending ? (
+              <>
+                <Loader className="animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Save"
+            )}
+          </Button>
         </DialogFooter>
       </form>
     </>
