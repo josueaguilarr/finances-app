@@ -49,36 +49,36 @@ const data = {
   ],
   navMain: [
     {
-      title: "Plataforma",
+      title: "Platform",
       url: "#",
       items: [
         {
-          title: "Tablero",
+          title: "Dashboard",
           url: "/tablero",
           icon: LayoutDashboard,
         },
         {
-          title: "Cuentas",
+          title: "Accounts",
           url: "/accounts",
           icon: WalletCards,
         },
         {
-          title: "Transacciones",
+          title: "Transactions",
           url: "/transactions",
           icon: BanknoteArrowUp,
         },
         {
-          title: "Categorías",
+          title: "Categories",
           url: "/categories",
           icon: BookOpenCheck,
         },
         {
-          title: "Presupuestos",
+          title: "Budgets",
           url: "/budgets",
           icon: HandCoins,
         },
         {
-          title: "Metas",
+          title: "Goals",
           url: "/goals",
           icon: Flag,
         },
