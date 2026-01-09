@@ -46,7 +46,7 @@ export async function registerAccountAction(
     };
   }
 
-  revalidatePath("/transactions");
+  revalidatePath("/accounts");
 
   return {
     success: true,
