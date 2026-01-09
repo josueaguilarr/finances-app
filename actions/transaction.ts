@@ -5,7 +5,7 @@ import {
   TransactionFormSchema,
   TransactionFormState,
 } from "@/validations/transaction";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export async function registerTransactionAction(
@@ -19,7 +19,7 @@ export async function registerTransactionAction(
     description: formData.get("description") as string,
     amount: formData.get("amount") as string,
     type: formData.get("type") as string,
-    notes: formData.get("notes") as string ?? "",
+    notes: (formData.get("notes") as string) ?? "",
   };
 
   const { data, success, error } = TransactionFormSchema.safeParse(fields);
@@ -35,9 +35,12 @@ export async function registerTransactionAction(
     };
   }
 
-  const { error: errorRegister, message } = await registerTransactionService(
-    data
-  );
+  const {
+    error: errorRegister,
+    message,
+    accountName,
+    balance,
+  } = await registerTransactionService(data);
 
   if (errorRegister) {
     return {
@@ -51,5 +54,10 @@ export async function registerTransactionAction(
     };
   }
 
-  redirect("/transactions");
+  revalidatePath("/transactions");
+
+  return {
+    success: true,
+    message: `Transaction registered successfully. New balance for account ${accountName}: $${balance}`,
+  };
 }

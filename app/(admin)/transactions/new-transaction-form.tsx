@@ -11,10 +11,10 @@ import { actions } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { TransactionFormState } from "@/validations/transaction";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Account } from "../accounts/columns";
-import { Category } from "../categories/columns";
+import { Account } from "@/app/(admin)/accounts/columns";
+import { Category } from "@/app/(admin)/categories/columns";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -44,15 +44,18 @@ const INITIAL_STATE: TransactionFormState = {
 type FormNewTransactionProps = {
   accounts: Account[];
   categories: Category[];
+  onSuccess: () => void;
 };
 
 export const FormNewTransaction = ({
   accounts,
   categories,
+  onSuccess,
 }: FormNewTransactionProps) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState<string>("00:00:00");
+  const hasShownToast = useRef(false);
 
   const buildDateTime = () => {
     if (!date || !time) return "";
@@ -79,7 +82,13 @@ export const FormNewTransaction = ({
     if (state.supabaseErrors) {
       toast.error(state.supabaseErrors.reasons);
     }
-  }, [state]);
+
+    if (state.success && !hasShownToast.current) {
+      toast.success(state.message);
+      hasShownToast.current = true;
+      onSuccess();
+    }
+  }, [state, onSuccess]);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">

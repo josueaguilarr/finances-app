@@ -1,17 +1,15 @@
-"use server"
+"use server";
 
-import { Dialog } from "@/components/dialog";
 import { HeadPage } from "@/components/ui/head-page";
 import { TitlePage } from "@/components/ui/title-page";
-import { Plus } from "lucide-react";
-import TransactionsTable from "./transactions-table";
+import TransactionsTable from "@/app/(admin)/transactions/transactions-table";
 import { getTransactionsService } from "@/lib/supabase/transactions";
-import { TransactionRecords } from "./columns";
-import { FormNewTransaction } from "./new-transaction-form";
+import { TransactionRecords } from "@/app/(admin)/transactions/columns";
 import { getIdAndNameAccountsService } from "@/lib/supabase/account";
 import { getIdAndNameCategoriesService } from "@/lib/supabase/categories";
-import { type Account } from "../accounts/columns";
-import { Category } from "../categories/columns";
+import { type Account } from "@/app/(admin)/accounts/columns";
+import { Category } from "@/app/(admin)/categories/columns";
+import { NewTransactionDialog } from "@/app/(admin)/transactions/new-transaction-dialog";
 
 export default async function Page() {
   const res = await getTransactionsService();
@@ -31,16 +29,7 @@ export default async function Page() {
     <>
       <HeadPage>
         <TitlePage>Transactions</TitlePage>
-        <Dialog
-          icon={Plus}
-          buttonLabel="New transaction"
-          btnLabelCancel="Cancel"
-          btnLabelSuccess="Save"
-          title="New transaction"
-          description="Create a new transaction for manage your money."
-        >
-          <FormNewTransaction accounts={accounts} categories={categories} />
-        </Dialog>
+        <NewTransactionDialog accounts={accounts} categories={categories} />
       </HeadPage>
       <TransactionsTable data={data} />
     </>

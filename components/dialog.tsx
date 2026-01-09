@@ -11,6 +11,8 @@ import { LucideIcon } from "lucide-react";
 import { PropsWithChildren } from "react";
 
 type Props = PropsWithChildren<{
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   icon?: LucideIcon;
   buttonLabel: string;
   btnLabelCancel: string;
@@ -20,14 +22,16 @@ type Props = PropsWithChildren<{
 }>;
 
 export function Dialog({
+  open,
   icon: Icon,
   buttonLabel,
   title,
   description,
   children,
+  onOpenChange,
 }: Props) {
   return (
-    <DialogMain>
+    <DialogMain open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button type="button" variant="outline">
           {Icon && <Icon className="size-4" />}

@@ -1,6 +1,6 @@
 import { AccountFormValues } from "@/validations/account";
-import { createClient } from "./server";
-import { getUserSession } from "./auth";
+import { createClient } from "@/lib/supabase/server";
+import { getUserSession } from "@/lib/supabase/auth";
 
 export async function getAccountsService() {
   const supabase = await createClient();
@@ -57,6 +57,34 @@ export async function registerAccountService(accountData: AccountFormValues) {
     if (error) return { error: true, message: error.message };
 
     return { error: false };
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateAccountBalanceService(
+  account: string,
+  amount: number,
+  action: "income" | "expense"
+) {
+  const supabase = await createClient();
+
+  try {
+    const { data, error } = await supabase.rpc("update_account_balance", {
+      p_account_id: account,
+      p_action: action,
+      p_amount: amount,
+    });
+
+    if (error) {
+      return { success: false, message: error.message };
+    }
+
+    return {
+      success: true,
+      accountName: data[0].account_name,
+      balance: data[0].balance,
+    };
   } catch (error) {
     throw error;
   }

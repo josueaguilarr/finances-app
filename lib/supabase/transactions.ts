@@ -1,6 +1,7 @@
 import { TransactionFormValues } from "@/validations/transaction";
-import { getUserSession } from "./auth";
-import { createClient } from "./server";
+import { getUserSession } from "@/lib/supabase/auth";
+import { createClient } from "@/lib/supabase/server";
+import { updateAccountBalanceService } from "@/lib/supabase/account";
 
 export async function getTransactionsService() {
   const supabase = await createClient();
@@ -48,7 +49,14 @@ export async function registerTransactionService(
 
     if (error) return { error: true, message: error.message };
 
-    return { error: false };
+    const { success, balance, accountName, message } =
+      await updateAccountBalanceService(account, Number(amount), type);
+
+    if (!success) {
+      return { error: true, message: message };
+    }
+
+    return { error: false, balance, accountName };
   } catch (error) {
     throw error;
   }
