@@ -5,7 +5,7 @@ import {
   CategoryFormSchema,
   type CategoryFormState,
 } from "@/validations/categories";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 export async function registerCategoryAction(
@@ -43,5 +43,10 @@ export async function registerCategoryAction(
     };
   }
 
-  redirect("/categories");
+  revalidatePath("/categories");
+
+  return {
+    success: true,
+    message: `Category registered successfully.`,
+  };
 }

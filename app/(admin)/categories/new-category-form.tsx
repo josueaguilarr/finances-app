@@ -6,7 +6,8 @@ import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CategoryFormState } from "@/validations/categories";
-import { useActionState, useEffect } from "react";
+import { Loader } from "lucide-react";
+import { useActionState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 const INITIAL_STATE: CategoryFormState = {
@@ -18,7 +19,12 @@ const INITIAL_STATE: CategoryFormState = {
   },
 };
 
-export const FormNewCategory = () => {
+type FormNewCategoryProps = {
+  onSuccess: () => void;
+};
+
+export const FormNewCategory = ({ onSuccess }: FormNewCategoryProps) => {
+  const hasShownToast = useRef(false);
   const [state, formAction, pending] = useActionState(
     actions.categories.registerCategoryAction,
     INITIAL_STATE
@@ -34,7 +40,13 @@ export const FormNewCategory = () => {
     if (state.supabaseErrors) {
       toast.error(state.supabaseErrors.reasons);
     }
-  }, [state]);
+
+    if (state.success && !hasShownToast.current) {
+      toast.success(state.message);
+      hasShownToast.current = true;
+      onSuccess();
+    }
+  }, [state, onSuccess]);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
@@ -50,10 +62,19 @@ export const FormNewCategory = () => {
 
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant="outline">Cancelar</Button>
+          <Button variant="outline" disabled={pending}>
+            Cancel
+          </Button>
         </DialogClose>
         <Button type="submit" disabled={pending}>
-          Guardar
+          {pending ? (
+            <>
+              <Loader className="animate-spin" />
+              Processing...
+            </>
+          ) : (
+            "Save"
+          )}
         </Button>
       </DialogFooter>
     </form>

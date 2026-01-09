@@ -1,11 +1,9 @@
 import { TitlePage } from "@/components/ui/title-page";
 import { getCategoriesService } from "@/lib/supabase/categories";
-import { Category } from "./columns";
+import { Category } from "@/app/(admin)/categories/columns";
 import { HeadPage } from "@/components/ui/head-page";
-import { Dialog } from "@/components/dialog";
-import { Plus } from "lucide-react";
-import CategoriesTable from "./categories-table";
-import { FormNewCategory } from "./new-category-form";
+import CategoriesTable from "@/app/(admin)/categories/categories-table";
+import { NewCategoryDialog } from "@/app/(admin)/categories/new-category-dialog";
 
 export default async function Page() {
   const res = await getCategoriesService();
@@ -20,16 +18,7 @@ export default async function Page() {
     <>
       <HeadPage>
         <TitlePage>Categories</TitlePage>
-        <Dialog
-          icon={Plus}
-          buttonLabel="New category"
-          btnLabelCancel="Cancel"
-          btnLabelSuccess="Save"
-          title="New category"
-          description="Create a new category for manage your money."
-        >
-          <FormNewCategory />
-        </Dialog>
+        <NewCategoryDialog />
       </HeadPage>
       <CategoriesTable data={data} />
     </>
