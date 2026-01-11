@@ -89,3 +89,20 @@ export async function updateAccountBalanceService(
     throw error;
   }
 }
+
+export async function getTotalBalanceAccounts() {
+  const supabase = await createClient();
+  const user = await getUserSession();
+
+  try {
+    const { data, error } = await supabase.rpc("get_total_balance_accounts", {
+      p_user_id: user?.id,
+    });
+
+    if (error) return { error: true, message: error.message };
+
+    return { total: data };
+  } catch (error) {
+    throw error;
+  }
+}
