@@ -1,7 +1,10 @@
 import { BalanceCards } from "@/components/balance-cards";
 import { HeadPage } from "@/components/ui/head-page";
 import { TitlePage } from "@/components/ui/title-page";
-import { getTotalBalanceAccounts } from "@/lib/supabase/account";
+import {
+  getMonhtlyIncomeExpense,
+  getTotalBalanceAccounts,
+} from "@/lib/supabase/account";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,20 +12,26 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const res = await getTotalBalanceAccounts();
+  const totalBalance = await getTotalBalanceAccounts();
+  const monthlyIncomeExpense = await getMonhtlyIncomeExpense();
 
-  if (res?.error) {
-    throw new Error(res?.message);
+  if (totalBalance?.error) {
+    throw new Error(totalBalance?.message);
   }
 
-  const { total } = res;
+  if (monthlyIncomeExpense.error) {
+    throw new Error(monthlyIncomeExpense?.message);
+  }
+
+  const { income, expenses } = monthlyIncomeExpense;
+  const { total } = totalBalance;
 
   return (
     <>
       <HeadPage>
         <TitlePage>Dashboard</TitlePage>
       </HeadPage>
-      <BalanceCards total={total} />
+      <BalanceCards total={total} income={income} expenses={expenses} />
     </>
   );
 }

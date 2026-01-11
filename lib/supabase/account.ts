@@ -106,3 +106,25 @@ export async function getTotalBalanceAccounts() {
     throw error;
   }
 }
+
+export async function getMonhtlyIncomeExpense() {
+  const supabase = await createClient();
+  const user = await getUserSession();
+
+  try {
+    const { data, error } = await supabase.rpc("get_monthly_income_expense", {
+      p_user_id: user?.id,
+    });
+
+    if (error) return { error: true, message: error.message };
+
+    const { income, expense } = data[0];
+
+    return {
+      income,
+      expenses: expense,
+    };
+  } catch (error) {
+    throw error;
+  }
+}

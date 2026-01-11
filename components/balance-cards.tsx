@@ -11,9 +11,11 @@ import {
 
 type BalancesProp = {
   total: number;
+  income: number;
+  expenses: number;
 };
 
-export const BalanceCards = ({ total }: BalancesProp) => {
+export const BalanceCards = ({ total, income, expenses }: BalancesProp) => {
   const balanceData = [
     {
       title: "Balance Total",
@@ -26,7 +28,7 @@ export const BalanceCards = ({ total }: BalancesProp) => {
     },
     {
       title: "Ingresos",
-      amount: 0,
+      amount: income,
       change: 0,
       changePercent: 0,
       trend: "up",
@@ -35,7 +37,7 @@ export const BalanceCards = ({ total }: BalancesProp) => {
     },
     {
       title: "Gastos",
-      amount: 0,
+      amount: expenses,
       change: 0,
       changePercent: 0,
       trend: "down",
